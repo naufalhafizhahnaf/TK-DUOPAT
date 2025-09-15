@@ -1,2 +1,1 @@
 "# TK-DUOPAT" 
-"# TK-DUOPAT" 
