@@ -4,35 +4,77 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TK DUO PAT</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="assets/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <header>
         <nav>
+            <!-- Kiri: Settings -->
             <div class="button-settings">
                 <div class="logo">
+                    <!-- Heroicons: Cog 6-tooth -->
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="settings-icon">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z" />
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                     </svg>
+
                 </div>
             </div>
+
+            <!-- Tengah: Scoreboard -->
             <div class="scoreboard">
+                <div class="rectangle-name-player">Player</div>
+                <div class="rectangle-score-player">0</div>
+
                 <div class="rectangle-logo">
-                    <img src="img/logo.png" alt="Logo">
+                    <img src="assets/img/logo.png" alt="Logo">
                 </div>
-                <div class="rectangle-score-player">
-                    0
-                <div class="rectangle-score-computer"></div>
+
+                <div class="rectangle-score-computer">0</div>
+                <div class="rectangle-name-computer">Computer</div>
             </div>
+
+            <!-- Kanan: Kosong untuk balance -->
+            <div class="right-placeholder"></div>
         </nav>
     </header>
 
-
     <main>
-        <img src="img/table.svg" alt="table poker" class="table-img">
+        <img src="assets/img/table.svg" alt="table poker" class="table-img">
+            <div class="table-overlay-rectangle">
+                <div class="layer-20"></div>
+                <!-- Layer 50 dengan SVG di dalamnya -->
+                <div class="layer-50">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="plus-icon">
+                        <path d="M12 21C10.346 21 9 19.654 9 18L9.053 14.947L6.018 15C4.346 15 3 13.654 3 12C3 10.346 4.346 9 6 9L9.053 8.946L9 6.018C9 4.346 10.346 3 12 3C13.654 3 15 4.346 15 6L15.055 8.946L18.018 9C19.654 9 21 10.346 21 12C21 13.654 19.654 15 18 15L15.055 14.947L15 18.018C15 19.654 13.654 21 12 21ZM11 13V18.018C11 18.551 11.449 19 12 19C12.551 19 13 18.551 13 18V13H18.018C18.551 13 19 12.551 19 12C19 11.449 18.551 11 18 11H13V6C13 5.431 12.551 5 12 5C11.449 5 11 5.449 11 6V11H6C5.431 11 5 11.449 5 12C5 12.551 5.449 13 6 13H11Z" fill="#EEEEEE"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="overlay-container">
+                <div class="overlay-title">Operator</div>
+                <div class="overlay-rectangle">
+                    <div class="operator-card"></div>
+                </div>
+            </div>
+            <!-- Player circle (tanpa nama) -->
+            <div class="player-circle" aria-hidden="true"></div>
+            <!-- Timer Container -->
+            <div class="timer-container">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" 
+                    stroke-width="1.5" stroke="currentColor" class="timer-icon">
+                    <path stroke-linecap="round" stroke-linejoin="round" 
+                        d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+                <span id="timer">05:00</span>
+            </div>
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="btn-surrender">Surrender</button>
+                <button class="btn-check">Check</button>
+                <button class="btn-delete">Delete</button>
+            </div>
     </main>
-
     <footer>
         <p>© 2025 TK DUO PAT. All rights reserved.</p>
     </footer>

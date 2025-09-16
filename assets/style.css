@@ -1,0 +1,323 @@
+/* Reset & global style */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #B5962B;
+    color: #f8fafc;
+    background-image: url('img/background.svg'); 
+    background-size: contain; 
+    background-repeat: no-repeat; 
+    background-position: left center; 
+}
+
+/* Header */
+header {
+    background-color: transparent;
+    padding: 10px 15px;
+}
+
+header nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* kiri - tengah - kanan */
+    position: relative;
+}
+
+/* Logo (settings button) */
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+/* Scoreboard container di tengah */
+.scoreboard {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0; /* hilangkan jarak antar kotak */
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* Placeholder kanan agar balance dengan settings */
+.right-placeholder {
+    width: 48px; /* sama dengan lebar settings-icon */
+    height: 48px;
+}
+
+/* Rectangle logo */
+header .rectangle-logo {
+    width: 80px;
+    height: 50px;
+    background-color: #CAC2AF;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+header .rectangle-logo img {
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+}
+
+/* Player score */
+header .rectangle-score-player,
+header .rectangle-score-computer {
+    width: 50px;
+    height: 50px;
+    background-color: #000;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Lora', serif;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+/* Player name */
+header .rectangle-name-player,
+header .rectangle-name-computer {
+    width: 120px;
+    height: 50px;
+    background-color: #81141B;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Lora', serif;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+/* Settings icon */
+.settings-icon {
+    width: 48px;
+    height: 48px;
+    color: #81141B;
+    cursor: pointer;
+    padding: 6px;
+    border: 3px solid #81141B;
+    border-radius: 50%;
+    transition: transform 0.2s, background-color 0.2s;
+    background-color: transparent;
+    z-index: 4;
+}
+
+.settings-icon:hover {
+    transform: rotate(20deg);
+    opacity: 0.8;
+}
+
+/* Main content */
+main {
+    flex: 1;
+    display: flex;              
+    justify-content: center;    
+    align-items: center;        
+    padding: 30px 10px;
+    text-align: center;
+}
+
+/* Table image */
+.table-img {
+    width: 100%;     
+    max-width: 50%; 
+    height: auto;
+}
+
+/* Overlay container (judul + kotak) */
+.overlay-container {
+    position: absolute;
+    top: 25%; /* geser ke atas */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 5;
+}
+
+/* Title di atas kotak */
+.overlay-title {
+    background-color: #81141B;
+    color: #fff;
+    font-family: 'Bree Serif';
+    font-size: 20px;
+    padding: 8px 20px;
+    border-radius: 8px 8px 8px 8px;
+    /*roundedatas*/display: inline-block;
+    -webkit-border-radius: 8px 8px 8px 8px;
+    -moz-border-radius: 8px 8px 8px 8px;
+    -ms-border-radius: 8px 8px 8px 8px;
+    -o-border-radius: 8px 8px 8px 8px;
+}
+
+/* Overlay rectangle */
+.overlay-rectangle {
+    width: 460px;
+    height: 100px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 10px 10px 10px 10px;
+    /*roundedbawah*/margin-top: 0;
+    /*langsungnyambungdengantitle*/
+    -webkit-border-radius: 10px 10px 10px 10px;
+    -moz-border-radius: 10px 10px 10px 10px;
+    -ms-border-radius: 10px 10px 10px 10px;
+    -o-border-radius: 10px 10px 10px 10px;
+}
+
+/* Overlay kotak tambahan di atas table */
+.table-overlay-rectangle {
+    position: absolute;
+    top: 50%; /* posisinya di tengah meja */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 370px;
+    height: 85px;
+    z-index: 6; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Layer kotak transparan 20% */
+.table-overlay-rectangle .layer-20 {
+    position: relative;  /* penting supaya .layer-50 bisa ngikut parent ini */
+    width: 370px;
+    height: 85px;
+    background-color: rgba(255, 255, 255, 0.2); 
+    border-radius: 10px;
+}
+
+/* Layer kotak transparan 50% */
+.table-overlay-rectangle .layer-50 {
+    position: absolute;
+    top: 5px;           /* jarak dari atas parent */
+    left: 5px;          /* taruh di sisi kiri parent */
+    width: 50px;     
+    height: 77px;   
+    background-color: rgba(255, 255, 255, 0.5); 
+    border-radius: 10px;
+
+    display: flex;               
+    justify-content: center;     
+    align-items: center;         
+    cursor: pointer;             
+}
+
+/* SVG Plus Icon */
+.table-overlay-rectangle .layer-50 .plus-icon {
+    width: 25px;
+    height: 25px;
+}
+
+/* Timer Container */
+.timer-container {
+    position: absolute;
+    bottom: 30%;
+    /*aturagarsejajarsepertidigambar*/left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    /*jarakantaraicondanteks*/background-color: rgba(255, 255, 255, 0.2);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 15px;
+    color: #000;
+    font-family: 'Lora', serif;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    -ms-border-radius: 20px;
+    -o-border-radius: 20px;
+}
+
+/* Icon */
+.timer-icon {
+    width: 20px;
+    height: 20px;
+    color: #000;
+}
+
+/* Action Buttons Container */
+.action-buttons {
+    position: absolute;
+    bottom: 12%; /* Sesuaikan posisi vertikal agar sejajar dengan gambar */
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px; /* Jarak antar tombol */
+    z-index: 6;
+    margin-left: 30%;
+}
+
+/* Base style untuk semua tombol */
+.action-buttons button {
+    font-family: 'Lora', serif;
+    font-weight: 400;
+    /*tanpabold*/font-size: 14px;
+    padding: 5px 15px;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s, opacity 0.2s;
+    box-sizing: border-box;
+    width: 120px;
+    /*semuatombolsamapanjang*/text-align: center;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    -ms-border-radius: 20px;
+    -o-border-radius: 20px;
+}
+
+/* Tombol Surrender */
+.action-buttons .btn-surrender {
+    background-color: transparent;
+    color: #fff;
+    border: 2px solid #fff;      /* border tegas putih */
+    border-radius: 25px;          /* membuat oval */
+    padding: 8px 25px;            /* cukup lebar agar oval */
+}
+
+.btn-surrender:hover {
+    opacity: 0.8;
+}
+
+/* Tombol Check */
+.btn-check {
+    background-color: #81141B;
+    color: #fff;
+}
+
+.btn-check:hover {
+    opacity: 0.8;
+}
+
+/* Tombol Delete */
+.btn-delete {
+    background-color: #000;
+    color: #fff;
+}
+
+.btn-delete:hover {
+    opacity: 0.8;
+}
+
+.player-circle { position: absolute; left: 50%; top: 54%; transform: translate(-420px, 60%); /*geserlebihkekiri(dari-260pxjadi-320px)*/width: 88px; height: 88px; border-radius: 50%; background-color: #F7F2DC; /*fill*/border: 4px solid #A1262E; /*stroke*/box-shadow: 0 6px 12px rgba(0,0,0,0.18); z-index: 7; pointer-events: none; -webkit-transform: translate(-420px, 60%); -moz-transform: translate(-420px, 60%); -ms-transform: translate(-420px, 60%); -o-transform: translate(-420px, 60%);
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 20px;
+    background-color: transparent;
+}
