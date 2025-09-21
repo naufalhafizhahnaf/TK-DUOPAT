@@ -28,6 +28,12 @@
 
                 <div class="rectangle-logo">
                     <img src="assets/img/logo.png" alt="Logo">
+                    <div class="timer-container">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="timer-icon">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                        </svg>
+                    <span id="timer">05:00</span>
+                    </div>
                 </div>
 
                 <div class="rectangle-score-computer">0</div>
@@ -36,12 +42,6 @@
 
             <div class="right-placeholder"></div>
         </nav>
-            <div class="timer-container">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="timer-icon">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                </svg>
-            <span id="timer">05:00</span>
-            </div>
     </header>
     
     <main>
@@ -60,6 +60,14 @@
         <div class="overlay-container">  
             <div class="overlay-rectangle" id="operator-container"></div>
             <div class="overlay-title">Operator</div>
+        </div>
+
+        <!-- 🔹 Rear + Main Cards -->
+        <div class="cards-wrapper">
+            <div class="rear-card">
+                <img src="assets/img/cards/main/rear.png" alt="Rear Card" id="rear-card">
+            </div>
+            <div class="main-cards" id="main-cards-container"></div>
         </div>
 
         <div class="action-buttons">
