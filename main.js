@@ -8,6 +8,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const btnDelete = document.querySelector(".btn-delete");
     const btnSurrender = document.querySelector(".btn-surrender");
 
+    const computerScoreEl = document.querySelector(".rectangle-score-computer");
+    const playerScoreEl = document.querySelector(".rectangle-score-player");
+
+    let computerScore = 0;
+    let playerScore = 0;
+
     const operators = [
         { symbol: "(", file: "(H.png" },
         { symbol: ")", file: ")H.png" },
@@ -29,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentSolution = null;
 
     // ======================
-    // HELPER FUNCTIONS
+    // HELPERS
     // ======================
 
     function shuffle(array) {
@@ -72,6 +78,72 @@ document.addEventListener("DOMContentLoaded", () => {
             } catch { }
         }
         return { has: false, solution: null };
+    }
+
+    function clearLayer20AndRestoreMain() {
+        const elements = [...layer20.children];
+        elements.forEach(el => {
+            const folder = el.getAttribute("data-folder");
+            const file = el.getAttribute("data-file");
+
+            if (folder === "main") {
+                const originalCard = mainCardsMap[file];
+                if (originalCard) {
+                    originalCard.style.display = "block";
+                }
+            }
+            el.remove();
+        });
+        updateLayer50Visibility();
+        adjustLayer20Width();
+        updateCheckButtonState();
+    }
+
+    function startNewRound({ force = false, delay = 0 } = {}) {
+        if (!force && layer20.children.length > 0) {
+            showPopup("Masih ada kartu di layer 20, tidak bisa diacak!", false);
+            return;
+        }
+
+        const doStart = () => {
+            clearLayer20AndRestoreMain();
+            
+            // Tentukan apakah ronde ini harus tanpa solusi (50% kemungkinan)
+            const shouldHaveNoSolution = Math.random() < 0.5;
+            let attempts = 0;
+            const maxAttempts = 50; // Batasi jumlah percobaan untuk mencegah loop tak terbatas
+
+            do {
+                currentDeck = shuffle([...allMainCards]).slice(0, 4);
+                currentDeckNumbers = currentDeck.map(f => getRankFromFile(f));
+                const res = has24Solution(currentDeckNumbers);
+                currentDeckHasSolution = res.has;
+                currentSolution = res.solution;
+                attempts++;
+
+                // Jika ingin kombinasi tanpa solusi, lanjutkan hingga menemukan yang tidak punya solusi
+                // Jika ingin kombinasi dengan solusi, lanjutkan hingga menemukan yang punya solusi
+                if (shouldHaveNoSolution && currentDeckHasSolution && attempts < maxAttempts) {
+                    continue;
+                } else if (!shouldHaveNoSolution && !currentDeckHasSolution && attempts < maxAttempts) {
+                    continue;
+                } else {
+                    break;
+                }
+            } while (attempts < maxAttempts);
+
+            renderMainCards(currentDeck);
+            updateCheckButtonState();
+
+            // Debugging: Tampilkan status solusi di konsol
+            console.log(`Ronde baru - Harus tanpa solusi: ${shouldHaveNoSolution}, Hasil: ${currentDeckHasSolution ? 'Punya solusi' : 'Tidak punya solusi'}, Kartu: ${currentDeckNumbers}`);
+        };
+
+        if (delay > 0) {
+            setTimeout(doStart, delay);
+        } else {
+            doStart();
+        }
     }
 
     function renderMainCards(cardsToRender) {
@@ -197,6 +269,9 @@ document.addEventListener("DOMContentLoaded", () => {
         operatorContainer.appendChild(card);
     });
 
+    // ======================
+    // DRAG & DROP UNTUK LAYER20
+    // ======================
     layer20.addEventListener("dragover", e => {
         e.preventDefault();
         const dragging = layer20.querySelector(".dragging");
@@ -213,6 +288,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     layer20.addEventListener("drop", e => {
         e.preventDefault();
+        removeHighlight(layer20);
+
         const fileName = e.dataTransfer.getData("text/file");
         const type = e.dataTransfer.getData("text/type");
         const folder = e.dataTransfer.getData("text/folder") || "main";
@@ -227,77 +304,108 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    function getDragAfterElement(container, x) {
-        const draggableElements = [...container.querySelectorAll(".operator-card:not(.dragging)")];
-        return draggableElements.reduce((closest, child) => {
-            const box = child.getBoundingClientRect();
-            const offset = x - (box.left + box.width / 2);
-            if (offset < 0 && offset > closest.offset) {
-                return { offset: offset, element: child };
-            } else {
-                return closest;
+    // ======================
+    // LAYER50 PROXY KE LAYER20
+    // ======================
+    layer50.addEventListener("dragover", e => {
+        e.preventDefault();
+    });
+
+    layer50.addEventListener("drop", e => {
+        e.preventDefault();
+        removeHighlight(layer20);
+
+        const fileName = e.dataTransfer.getData("text/file");
+        const type = e.dataTransfer.getData("text/type");
+        const folder = e.dataTransfer.getData("text/folder") || "main";
+        if (!fileName) return;
+
+        if (type === "container") {
+            createCard(fileName, fileName, folder);
+            if (folder === "main") {
+                const draggedCard = mainCardsMap[fileName];
+                if (draggedCard) draggedCard.style.display = "none";
             }
-        }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
+    });
+
+    // ======================
+    // HIGHLIGHT EFFECT
+    // ======================
+    function addHighlight(el) {
+        el.classList.add("highlight");
+    }
+    function removeHighlight(el) {
+        el.classList.remove("highlight");
     }
 
-    function showPopup(message, withSolution = false, solution = null) {
+    ["dragenter"].forEach(evt => {
+        layer20.addEventListener(evt, () => addHighlight(layer20));
+        layer50.addEventListener(evt, () => addHighlight(layer20));
+    });
+    ["dragleave", "drop"].forEach(evt => {
+        layer20.addEventListener(evt, () => removeHighlight(layer20));
+        layer50.addEventListener(evt, () => removeHighlight(layer20));
+    });
+
+    // ======================
+    // UNIFIED POPUP FUNCTION
+    // ======================
+    function showPopup(message, withSolution = false, solution = null, callback = null) {
         const overlay = document.createElement("div");
         overlay.classList.add("result-overlay");
         document.body.appendChild(overlay);
 
         const popup = document.createElement("div");
         popup.classList.add("result-popup");
-        popup.innerHTML = `<p style="margin-bottom: 15px;">${message}</p>`;
 
+        // Create message container
+        const messageEl = document.createElement("p");
+        messageEl.classList.add("message-text");
+        messageEl.innerHTML = message;
+        popup.appendChild(messageEl);
+
+        // Create button container for alignment
+        const buttonContainer = document.createElement("div");
+        buttonContainer.style.display = "flex";
+        buttonContainer.style.gap = "10px";
+        buttonContainer.style.justifyContent = "center";
+        buttonContainer.style.marginTop = "15px";
+
+        // Create OK button
+        const btnOk = document.createElement("button");
+        btnOk.classList.add("btn-ok");
+        btnOk.textContent = "OK";
+        btnOk.addEventListener("click", () => {
+            popup.remove();
+            overlay.remove();
+            if (typeof callback === "function") callback();
+        });
+        buttonContainer.appendChild(btnOk);
+
+        // Create Solution button if applicable
         if (withSolution && solution) {
-            const btnSolusi = document.createElement("button");
-            btnSolusi.textContent = "Solusi";
-            btnSolusi.addEventListener("click", () => {
-                popup.innerHTML = `<p style="margin-bottom: 15px;">Solusi: ${solution}</p>`;
-                const btnOk = document.createElement("button");
-                btnOk.textContent = "OK";
-                btnOk.addEventListener("click", () => {
-                    popup.remove();
-                    overlay.remove();
-                });
-                popup.appendChild(btnOk);
+            const btnSolution = document.createElement("button");
+            btnSolution.classList.add("btn-solution");
+            btnSolution.textContent = "Solusi";
+            btnSolution.addEventListener("click", () => {
+                messageEl.innerHTML = `Solusi: ${solution}`;
+                btnSolution.remove(); // Remove Solution button after showing solution
             });
-            popup.appendChild(btnSolusi);
-        } else {
-            const btnOk = document.createElement("button");
-            btnOk.textContent = "OK";
-            btnOk.addEventListener("click", () => {
-                popup.remove();
-                overlay.remove();
-            });
-            popup.appendChild(btnOk);
+            buttonContainer.appendChild(btnSolution);
         }
 
+        popup.appendChild(buttonContainer);
         document.body.appendChild(popup);
     }
 
-    // ======================
     // BUTTON HANDLERS
-    // ======================
-
     rearCard.addEventListener("click", () => {
-        if (layer20.children.length > 0) {
-            showPopup("Masih ada kartu di layer 20, tidak bisa diacak!");
-            return;
-        }
-
-        currentDeck = shuffle([...allMainCards]).slice(0, 4);
-        currentDeckNumbers = currentDeck.map(f => getRankFromFile(f));
-        const res = has24Solution(currentDeckNumbers);
-        currentDeckHasSolution = res.has;
-        currentSolution = res.solution;
-        renderMainCards(currentDeck);
-        updateCheckButtonState();
+        startNewRound({ force: false });
     });
 
     btnCheck.addEventListener("click", () => {
         if (layer20.children.length === 0) return;
-
         let expression = "";
         for (let el of [...layer20.children]) {
             const folder = el.getAttribute("data-folder");
@@ -320,18 +428,20 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
             result = eval(expression);
         } catch {
-            showPopup("Ekspresi tidak valid!");
+            showPopup("Ekspresi tidak valid!", false);
             return;
         }
 
         if (currentDeckHasSolution) {
             if (Math.abs(result - 24) < 1e-6) {
-                showPopup("Anda benar!");
+                playerScore++;
+                if (playerScoreEl) playerScoreEl.textContent = playerScore;
+                showPopup("Anda benar!", false, null, () => startNewRound({ force: true }));
             } else {
-                showPopup("Anda salah!", true, currentSolution);
+                showPopup("Anda salah!", true, currentSolution, () => startNewRound({ force: true }));
             }
         } else {
-            showPopup("Kartu yang muncul tidak akan menghasilkan 24!");
+            showPopup("Kartu yang muncul tidak akan menghasilkan 24!", false, null, () => startNewRound({ force: true }));
         }
     });
 
@@ -354,16 +464,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     btnSurrender.addEventListener("click", () => {
         if (currentDeckHasSolution) {
-            showPopup("Solusi: " + currentSolution);
+            computerScore++;
+            if (computerScoreEl) computerScoreEl.textContent = computerScore;
+            showPopup("Kamu menyerah 😢", true, currentSolution, () => startNewRound({ force: true }));
         } else {
-            showPopup("Kartu tersebut tidak memiliki solusi karena kartu yang muncul tidak akan menghasilkan 24!");
+            showPopup("Kamu menyerah 😢<br>Kartu tersebut tidak memiliki solusi!", false, null, () => startNewRound({ force: true }));
         }
     });
 
-    // ======================
     // UI HELPERS
-    // ======================
-
     function updateLayer50Visibility() {
         if (layer20.children.length > 0) {
             layer50.classList.add("hidden");
@@ -384,6 +493,19 @@ document.addEventListener("DOMContentLoaded", () => {
         btnCheck.disabled = layer20.children.length === 0;
     }
 
+    function getDragAfterElement(container, x) {
+        const draggableElements = [...container.querySelectorAll(".operator-card:not(.dragging)")];
+        return draggableElements.reduce((closest, child) => {
+            const box = child.getBoundingClientRect();
+            const offset = x - box.left - box.width / 2;
+            if (offset < 0 && offset > closest.offset) {
+                return { offset: offset, element: child };
+            } else {
+                return closest;
+            }
+        }, { offset: Number.NEGATIVE_INFINITY }).element;
+    }
+
     // Init
-    rearCard.click();
+    startNewRound({ force: true });
 });

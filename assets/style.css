@@ -106,21 +106,28 @@ header .rectangle-name-computer {
     font-weight: 700;
 }
 
-/* Settings icon */
-.settings-icon {
+/* Settings button */
+.settings-button {
     width: 48px;
     height: 48px;
-    color: #81141B;
-    cursor: pointer;
     padding: 6px;
     border: 3px solid #81141B;
     border-radius: 50%;
-    transition: transform 0.2s, background-color 0.2s;
     background-color: transparent;
-    z-index: 4;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.2s, background-color 0.2s;
 }
 
-.settings-icon:hover {
+.settings-button .settings-icon {
+    width: 100%;
+    height: 100%;
+    color: #81141B;
+}
+
+.settings-button:hover {
     transform: rotate(20deg);
     opacity: 0.8;
 }
@@ -265,6 +272,12 @@ img.table-img {
     background-color: rgba(255, 255, 255, 0.3);
 }
 
+.layer-20.highlight {
+    box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.6);
+    transition: box-shadow 0.3s ease;
+    border-radius: 6px;
+}
+
 /* Timer Container */
 .timer-container {
     position: absolute;
@@ -330,23 +343,28 @@ img.table-img {
     opacity: 0.8;
 }
 
-/* Tombol Solusi di popup */
-.result-popup .btn-solution {
+/* Tombol Solusi dan OK di popup */
+.result-popup .btn-solution,
+.result-popup .btn-ok {
     padding: 6px 15px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    background-color: #000;
-    color: #fff;
+    background-color: #fff;
+    color: #81141B;
     font-family: 'Lora', serif;
     font-size: 14px;
-    margin-top: 10px;
-    margin-left: 5px;
+    transition: opacity 0.2s;
 }
 
-/* Container teks solusi */
-.result-popup .solution-text {
-    margin-top: 10px;
+.result-popup .btn-solution:hover,
+.result-popup .btn-ok:hover {
+    opacity: 0.8;
+}
+
+/* Container teks pesan di popup */
+.result-popup .message-text {
+    margin-bottom: 15px;
     font-size: 14px;
     font-family: 'Lora', serif;
     line-height: 1.4;
@@ -519,19 +537,8 @@ img.table-img {
     border-radius: 10px;
     z-index: 1000;
     text-align: center;
-}
-
-/* Tombol OK popup */
-.result-popup button {
-    padding: 6px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    background-color: #fff;
-    color: #81141B;
-    font-family: 'Lora', serif;
-    font-size: 14px;
-    margin-top: 10px;
+    min-width: 300px;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
 }
 
 /* Footer */
