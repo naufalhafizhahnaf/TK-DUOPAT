@@ -144,6 +144,12 @@ main {
     height: auto;
 }
 
+img.table-img {
+  pointer-events: none;   /* gambar jadi non-interaktif */
+  user-drag: none;        /* Safari */
+  -webkit-user-drag: none; /* Chrome/Safari */
+}
+
 /* Overlay container (judul + kotak) */
 .overlay-container {
     position: absolute;
@@ -206,7 +212,7 @@ main {
 
 /* Layer kotak transparan 20% (Drop Slot - bawah) */
 .table-overlay-rectangle .layer-20 {
-    position: relative;  /* ini kunci supaya child bisa absolute di dalamnya */
+    position: relative;
     top: -1px;
     left: -1px;
     width: 370px;
@@ -226,7 +232,7 @@ main {
     position: absolute;
     top: 50%;  
     left: 50%;
-    transform: translate(-50%, -50%); /* center terhadap layer-20 */
+    transform: translate(-50%, -50%);
     width: 58px;
     height: 83px;
     background-color: rgba(255, 255, 255, 0.5);
@@ -393,6 +399,24 @@ main {
     user-select: none;
     border: none;
     box-shadow: none;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.operator-card:active {
+    cursor: grabbing;
+}
+
+/* Efek saat drag */
+.dragging {
+    transform: scale(1.15) rotate(4deg);
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.3);
+    z-index: 999;
+}
+
+/* Efek saat dilepas */
+.dropped {
+    transform: scale(1) rotate(0deg);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* Operator Container */

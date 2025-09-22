@@ -40,11 +40,11 @@ document.addEventListener("DOMContentLoaded", () => {
         return array;
     }
 
-    function getCardValue(file) {
-        return parseInt(file);
+    function getRankFromFile(file) {
+        const match = file.match(/^\d+/);
+        return match ? parseInt(match[0]) : NaN;
     }
 
-    // Generate expression permutations
     function generateExpressions(nums) {
         if (nums.length === 1) return [nums[0].toString()];
         const results = [];
@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function renderMainCards(cardsToRender) {
         mainCardsContainer.innerHTML = "";
-        mainCardsMap.length = 0;
+        Object.keys(mainCardsMap).forEach(k => delete mainCardsMap[k]);
 
         cardsToRender.forEach(file => {
             const newCard = document.createElement("div");
@@ -98,12 +98,19 @@ document.addEventListener("DOMContentLoaded", () => {
                 e.dataTransfer.setData("text/file", file);
                 e.dataTransfer.setData("text/type", "container");
                 e.dataTransfer.setData("text/folder", "main");
+                newCard.classList.add("dragging");
 
                 const ghost = img.cloneNode(true);
                 ghost.classList.add("drag-ghost");
                 document.body.appendChild(ghost);
                 e.dataTransfer.setDragImage(ghost, 30, 42);
                 setTimeout(() => document.body.removeChild(ghost), 0);
+            });
+
+            newCard.addEventListener("dragend", () => {
+                newCard.classList.remove("dragging");
+                newCard.classList.add("dropped");
+                setTimeout(() => newCard.classList.remove("dropped"), 300);
             });
 
             mainCardsContainer.appendChild(newCard);
@@ -136,10 +143,17 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         newCard.draggable = true;
+
         newCard.addEventListener("dragstart", e => {
-            e.dataTransfer.setData("text/file", fileName);
-            e.dataTransfer.setData("text/type", "layer20");
-            e.dataTransfer.setData("text/folder", folder);
+            e.dataTransfer.effectAllowed = "move";
+            e.dataTransfer.setData("text/plain", fileName + "|" + folder);
+            newCard.classList.add("dragging");
+        });
+
+        newCard.addEventListener("dragend", () => {
+            newCard.classList.remove("dragging");
+            newCard.classList.add("dropped");
+            setTimeout(() => newCard.classList.remove("dropped"), 300);
         });
 
         layer20.appendChild(newCard);
@@ -162,6 +176,7 @@ document.addEventListener("DOMContentLoaded", () => {
             e.dataTransfer.setData("text/file", op.file);
             e.dataTransfer.setData("text/type", "container");
             e.dataTransfer.setData("text/folder", "operator");
+            card.classList.add("dragging");
 
             const ghost = img.cloneNode(true);
             ghost.classList.add("drag-ghost");
@@ -170,13 +185,32 @@ document.addEventListener("DOMContentLoaded", () => {
             setTimeout(() => document.body.removeChild(ghost), 0);
         });
 
+        card.addEventListener("dragend", () => {
+            card.classList.remove("dragging");
+            card.classList.add("dropped");
+            setTimeout(() => card.classList.remove("dropped"), 300);
+        });
+
         card.addEventListener("click", () => {
             createCard(op.file, op.symbol, "operator");
         });
         operatorContainer.appendChild(card);
     });
 
-    layer20.addEventListener("dragover", e => e.preventDefault());
+    layer20.addEventListener("dragover", e => {
+        e.preventDefault();
+        const dragging = layer20.querySelector(".dragging");
+        const afterElement = getDragAfterElement(layer20, e.clientX);
+
+        if (dragging) {
+            if (afterElement == null) {
+                layer20.appendChild(dragging);
+            } else {
+                layer20.insertBefore(dragging, afterElement);
+            }
+        }
+    });
+
     layer20.addEventListener("drop", e => {
         e.preventDefault();
         const fileName = e.dataTransfer.getData("text/file");
@@ -192,6 +226,19 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
     });
+
+    function getDragAfterElement(container, x) {
+        const draggableElements = [...container.querySelectorAll(".operator-card:not(.dragging)")];
+        return draggableElements.reduce((closest, child) => {
+            const box = child.getBoundingClientRect();
+            const offset = x - (box.left + box.width / 2);
+            if (offset < 0 && offset > closest.offset) {
+                return { offset: offset, element: child };
+            } else {
+                return closest;
+            }
+        }, { offset: Number.NEGATIVE_INFINITY }).element;
+    }
 
     function showPopup(message, withSolution = false, solution = null) {
         const overlay = document.createElement("div");
@@ -240,7 +287,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         currentDeck = shuffle([...allMainCards]).slice(0, 4);
-        currentDeckNumbers = currentDeck.map(f => parseInt(f));
+        currentDeckNumbers = currentDeck.map(f => getRankFromFile(f));
         const res = has24Solution(currentDeckNumbers);
         currentDeckHasSolution = res.has;
         currentSolution = res.solution;
@@ -257,7 +304,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const file = el.getAttribute("data-file");
 
             if (folder === "main") {
-                const rank = parseInt(file);
+                const rank = getRankFromFile(file);
                 expression += rank;
             } else if (folder === "operator") {
                 if (file === "+H.png") expression += "+";
