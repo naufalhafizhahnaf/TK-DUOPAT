@@ -7,11 +7,32 @@ document.addEventListener("DOMContentLoaded", () => {
     const btnCheck = document.querySelector(".btn-check");
     const btnDelete = document.querySelector(".btn-delete");
     const btnSurrender = document.querySelector(".btn-surrender");
-
     const computerScoreEl = document.querySelector(".rectangle-score-computer");
     const playerScoreEl = document.querySelector(".rectangle-score-player");
+    const settingsBtn = document.querySelector(".settings-button");
+    const settingsModal = document.getElementById("settingsModal");
+    const closeSettings = document.getElementById("closeSettings");
 
-    let computerScore = 0;
+        // setting modal
+     // buka modal
+  settingsBtn.addEventListener("click", () => {
+    settingsModal.style.display = "flex";
+  });
+
+  // tutup modal
+  closeSettings.addEventListener("click", () => {
+    settingsModal.style.display = "none";
+  });
+
+  // klik luar modal → tutup
+  window.addEventListener("click", (e) => {
+    if (e.target === settingsModal) {
+      settingsModal.style.display = "none";
+    }
+  });
+
+
+    let computerScore = 0;  
     let playerScore = 0;
 
     const operators = [
@@ -508,4 +529,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Init
     startNewRound({ force: true });
+
+
 });
