@@ -565,7 +565,7 @@ img.table-img {
     position: relative; 
     background-color: #81141B; /* Warna bingkai luar */
     /* Padding baru */
-    padding: 30px 15px 25px 15px; /* Menambah ruang di atas untuk banner */
+    padding: 45px 15px 25px 15px; /* Menambah ruang di atas untuk banner */
     border-radius: 25px;
     color: #000;
 
@@ -582,7 +582,7 @@ img.table-img {
 .result-popup::before {
     content: '';
     position: absolute;
-    top: 10px;
+    top: 20px;
     left: 10px;
     right: 10px;
     bottom: 30px;
@@ -595,7 +595,7 @@ img.table-img {
 
 .popup-banner-container {
     position: absolute;
-    top: -20px;
+    top: -40px;
     left: 50%;
     transform: translateX(-50%);
     z-index: 2;
@@ -604,6 +604,7 @@ img.table-img {
 .popup-banner-container svg {
     width: 282px; /* Atur SATU ukuran tetap untuk semua banner */
     height: auto; /* Biarkan tinggi menyesuaikan secara otomatis */
+    margin-top: 5px;
 }
 
 /* TAMBAHKAN ATURAN BARU INI DI BAWAHNYA */
