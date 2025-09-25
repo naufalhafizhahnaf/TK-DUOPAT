@@ -132,6 +132,37 @@ header .rectangle-name-computer {
     opacity: 0.8;
 }
 
+/* Styling untuk Grid Pengaturan di Popup */
+.settings-grid {
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    
+    /* Atur jarak vertikal dan horizontal secara terpisah */
+    row-gap: 20px;    /* <-- Jarak vertikal (atas-bawah) */
+    column-gap: 5px; /* <-- Jarak horizontal (kiri-kanan) */
+    
+    padding: 10px;
+    justify-items: center;
+}
+
+.settings-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.settings-box:hover {
+    transform: scale(1.1); /* Efek zoom saat disentuh cursor */
+}
+
+/* Tambahkan CSS ini di bagian styling popup */
+.result-popup.settings-popup {
+    min-width: auto; /* Hapus lebar minimum default */
+    width: 280px;    /* Atur lebar yang pas untuk 2 ikon berdampingan */
+}
+
 /* Main content */
 main {
     flex: 1;
@@ -514,6 +545,10 @@ img.table-img {
     left: -1000px;
 }
 
+/* ================================== */
+/* STYLING POPUP FINAL */
+/* ================================== */
+
 /* Overlay hitam transparan */
 .result-overlay {
     position: fixed;
@@ -527,18 +562,93 @@ img.table-img {
 
 /* Popup hasil */
 .result-popup {
+    position: relative; 
+    background-color: #81141B; /* Warna bingkai luar */
+    /* Padding baru */
+    padding: 30px 15px 25px 15px; /* Menambah ruang di atas untuk banner */
+    border-radius: 25px;
+    color: #000;
+
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: #81141B;
-    color: #fff;
-    padding: 20px 30px;
-    border-radius: 10px;
     z-index: 1000;
     text-align: center;
-    min-width: 300px;
+    min-width: 360px;
     box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+}
+
+.result-popup::before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    bottom: 30px;
+    background-color: #CAC1B0; /* Warna latar dalam */
+    border-radius: 18px;
+    z-index: -1; 
+}
+
+/* GANTI SEMUA ATURAN BANNER LAMA DENGAN INI */
+
+.popup-banner-container {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+}
+
+.popup-banner-container svg {
+    width: 282px; /* Atur SATU ukuran tetap untuk semua banner */
+    height: auto; /* Biarkan tinggi menyesuaikan secara otomatis */
+}
+
+/* TAMBAHKAN ATURAN BARU INI DI BAWAHNYA */
+
+/* Aturan KHUSUS yang akan menimpa aturan di atas HANYA untuk pop-up settings */
+.result-popup.settings-popup .popup-banner-container svg {
+    width: 250px; /* Atur ukuran tetap yang pas untuk pop-up settings */
+    min-width: auto;  /* Hapus batasan min-width agar tidak konflik */
+}
+
+/* Container teks pesan di popup */
+.result-popup .message-text {
+    font-family: 'Lora', serif;
+    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: 15px;
+    position: relative;
+    z-index: 1;
+}
+
+/* Tombol Solusi dan OK di popup */
+.result-popup .btn-solution,
+.result-popup .btn-ok {
+    padding: 6px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #fff;
+    color: #81141B;
+    font-family: 'Lora', serif;
+    font-size: 14px;
+    transition: opacity 0.2s;
+    position: relative;
+    z-index: 1;
+}
+
+.result-popup .btn-solution:hover,
+.result-popup .btn-ok:hover {
+    opacity: 0.8;
+}
+
+/* Style untuk kontainer tombol */
+.result-popup .button-container {
+    position: relative;
+    z-index: 1;
 }
 
 /* Footer */
