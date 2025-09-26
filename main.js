@@ -8,9 +8,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const btnDelete = document.querySelector(".btn-delete");
     const btnSurrender = document.querySelector(".btn-surrender");
     const settingsButton = document.querySelector(".settings-button");
-
     const computerScoreEl = document.querySelector(".rectangle-score-computer");
     const playerScoreEl = document.querySelector(".rectangle-score-player");
+    const playtime = document.getElementById("timer"); 
 
     let computerScore = 0;
     let playerScore = 0;
@@ -565,4 +565,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Init
     startNewRound({ force: true });
+
+    let timerDuration = 5 * 60; // 5 menit (dalam detik)
+    let remainingTime = timerDuration;
+
+    function formatTime(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${minutes.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+    }
+
+    function startTimer() {
+    const interval = setInterval(() => {
+        playtime.textContent = formatTime(remainingTime);
+
+        if (remainingTime <= 0) {
+        clearInterval(interval); // stop ketika 0
+        } else {
+        remainingTime--;
+        }
+    }, 1000);
+    }
+
+    // mulai otomatis
+    startTimer();
+
 });
