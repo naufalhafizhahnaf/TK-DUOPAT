@@ -605,6 +605,32 @@ img.table-img {
     margin-top: 5px;
 }
 
+/* Style untuk judul "Score" di dalam popup */
+.popup-score-title {
+    font-family: 'Lora', serif;
+    font-size: 20px;
+    font-weight: bold;
+    color: #000;
+    margin-bottom: 8px; /* Jarak antara judul dan kotak skor */
+}
+
+/* Style untuk kotak abu-abu pembungkus skor */
+.popup-score-box {
+    background-color: #E0E0E0;  /* Warna abu-abu muda seperti gambar */
+    border-radius: 25px;        /* Sudut yang tumpul */
+    padding: 5px 25px;          /* Jarak di dalam kotak */
+    display: inline-block;      /* Membuat kotak pas dengan isinya */
+}
+
+/* Style untuk teks angka skor */
+.popup-score-text {
+    font-family: 'Lora', serif; /* Font serif yang elegan seperti gambar */
+    font-size: 48px;            /* Ukuran angka yang besar */
+    color: #A1262E;             /* Warna merah marun */
+    font-weight: 700;           /* Teks tebal */
+    line-height: 1.2;
+}
+
 /* TAMBAHKAN ATURAN BARU INI DI BAWAHNYA */
 
 /* Aturan KHUSUS yang akan menimpa aturan di atas HANYA untuk pop-up settings */

@@ -590,10 +590,30 @@ document.addEventListener("DOMContentLoaded", () => {
             
             if (remainingTime < 0) {
                 clearInterval(timerInterval);
-                // Tambahkan logika game over di sini, misalnya:
-                showPopup("TIME'S UP!", "Waktu habis! Coba lagi di ronde berikutnya.", false, null, () => startNewRound({ force: true }));
+                
+                // Format skor menjadi 4 digit agar sesuai gambar (misal: 7 -> "0007")
+                const paddedScore = playerScore.toString().padStart(4, '0');
+
+                // Buat pesan HTML dengan judul "Score" di atas dan kotak skor di bawah
+                const message = `
+                    <div class="popup-score-title">Score</div>
+                    <div class="popup-score-box">
+                        <span class="popup-score-text">${paddedScore}</span>
+                    </div>
+                `;
+
+                // Panggil popup dengan tampilan skor yang baru
+                showPopup("WAKTU HABIS!", message, false, null, resetGame);
             }
         }, 1000);
     }
+
     startNewRound({ force: true });
+    function resetGame() {
+    playerScore = 0;
+    computerScore = 0;
+    playerScoreEl.textContent = playerScore;
+    computerScoreEl.textContent = computerScore;
+    startNewRound({ force: true });
+    }
 });
