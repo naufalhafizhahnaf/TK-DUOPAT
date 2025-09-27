@@ -421,22 +421,6 @@ img.table-img {
     opacity: 0.8;
 }
 
-/* Player Circle */
-.player-circle {
-    position: absolute;
-    left: 50%;
-    top: 54%;
-    transform: translate(-420px, 60%);
-    width: 88px;
-    height: 88px;
-    border-radius: 50%;
-    background-color: #F7F2DC;
-    border: 4px solid #A1262E;
-    box-shadow: 0 6px 12px rgba(0,0,0,0.18);
-    z-index: 7;
-    pointer-events: none;
-}
-
 /* Operator Card */
 .operator-card {
     margin: 5px;
@@ -498,6 +482,20 @@ img.table-img {
     bottom: 70%;
     left: 50%;
     transform: translateX(-50%);
+}
+
+/* Tambahkan ini ke file CSS Anda */
+.card-follower {
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transform: rotate(5deg); /* Hapus 'scale()' dari sini jika ada */
+    opacity: 0.9;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    
+    /* TAMBAHKAN DUA BARIS INI */
+    width: 55px;   /* Atur lebar kartu secara eksplisit. Anda bisa ubah angka ini! */
+    height: auto;  /* Biarkan tinggi menyesuaikan agar gambar tidak gepeng */
 }
 
 .rear-card img {
@@ -595,7 +593,7 @@ img.table-img {
 
 .popup-banner-container {
     position: absolute;
-    top: -40px;
+    top: -20px;
     left: 50%;
     transform: translateX(-50%);
     z-index: 2;
