@@ -188,6 +188,45 @@ img.table-img {
   -webkit-user-drag: none; /* Chrome/Safari */
 }
 
+/* KODE BARU: Styling untuk Display Perhitungan */
+#calculation-display {
+    position: absolute;
+    top: 50%;
+    left: 5%; /* Sesuaikan posisi horizontal */
+    transform: translateY(-50%);
+    width: 250px; /* Lebar display */
+    height: 100px; /* Tinggi display */
+    background-color: #ffffff33; /* Warna latar gelap seperti kalkulator */
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    z-index: 5;
+    font-family: 'Lora', serif; /* Font monospaced agar angka sejajar */
+}
+
+#display-expression {
+    font-size: 18px;
+    color: #000;
+    text-align: left;
+    height: 40px;
+    overflow-x: auto; /* Jika ekspresi terlalu panjang */
+    overflow-y: hidden;
+    white-space: nowrap;
+    padding-bottom: 5px;
+}
+
+#display-result {
+    font-size: 28px;
+    font-weight: bold;
+    color: #f1c40f; /* Warna kuning untuk hasil */
+    text-align: right;
+    height: 40px;
+}
+/* AKHIR KODE BARU */
+
 /* Overlay container (judul + kotak) */
 .overlay-container {
     position: absolute;

@@ -11,6 +11,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const computerScoreEl = document.querySelector(".rectangle-score-computer");
     const playerScoreEl = document.querySelector(".rectangle-score-player");
     const playtime = document.getElementById("timer");
+    const displayExpressionEl = document.getElementById("display-expression");
+    const displayResultEl = document.getElementById("display-result");
 
     let computerScore = 0;
     let playerScore = 0;
@@ -40,6 +42,70 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentDeckNumbers = [];
     let currentDeckHasSolution = false;
     let currentSolution = null;
+
+    // ===============================================
+    // BARU: FUNGSI UNTUK UPDATE DISPLAY PERHITUNGAN
+    // ===============================================
+    function updateCalculationDisplay() {
+        // 1. Reset warna ke default di awal fungsi
+        displayResultEl.style.color = '#81141B'; 
+
+        const cards = [...layer20.children];
+        
+        if (cards.length === 0) {
+            displayExpressionEl.textContent = "";
+            displayResultEl.textContent = "";
+            return;
+        }
+
+        // ... (sisa kode untuk membangun string tidak berubah)
+        let displayStr = "";
+        let evalStr = "";
+        const symbolMap = {
+            "(H.png": { display: "(", eval: "(" },
+            ")H.png": { display: ")", eval: ")" },
+            "xH.png": { display: "×", eval: "*" },
+            "bagiH.png": { display: "÷", eval: "/" },
+            "+H.png": { display: "+", eval: "+" },
+            "-H.png": { display: "-", eval: "-" }
+        };
+        for (const card of cards) {
+            const folder = card.getAttribute("data-folder");
+            const file = card.getAttribute("data-file");
+            if (folder === "main") {
+                const rank = getRankFromFile(file);
+                displayStr += ` ${rank} `;
+                evalStr += ` ${rank} `;
+            } else if (folder === "operator") {
+                const op = symbolMap[file];
+                if (op) {
+                    displayStr += ` ${op.display} `;
+                    evalStr += ` ${op.eval} `;
+                }
+            }
+        }
+        displayExpressionEl.textContent = displayStr.trim().replace(/\s+/g, ' ');
+
+        if (isSequenceValid(cards)) {
+            try {
+                const result = eval(evalStr);
+                if (!isFinite(result)) {
+                    displayResultEl.textContent = "Error";
+                } else {
+                    displayResultEl.textContent = `= ${parseFloat(result.toFixed(4))}`;
+
+                    // 2. Jika hasil perhitungan adalah 24, ubah warnanya
+                    if (Math.abs(result - 24) < 1e-6) {
+                        displayResultEl.style.color = '#28a745'; // Warna hijau
+                    }
+                }
+            } catch (e) {
+                displayResultEl.textContent = "";
+            }
+        } else {
+            displayResultEl.textContent = "";
+        }
+    }
 
     // ======================
     // HELPERS
@@ -136,6 +202,7 @@ document.addEventListener("DOMContentLoaded", () => {
         updateLayer50Visibility();
         adjustLayer20Width();
         updateCheckButtonState();
+        updateCalculationDisplay();
     }
 
     function startNewRound({ force = false, delay = 0 } = {}) {
@@ -259,6 +326,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 updateLayer50Visibility();
                 adjustLayer20Width();
                 updateCheckButtonState();
+                updateCalculationDisplay();
             }
         });
 
@@ -270,12 +338,14 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         newCard.addEventListener("dragend", () => {
             newCard.classList.remove("dragging");
+            updateCalculationDisplay();
         });
 
         layer20.appendChild(newCard);
         updateLayer50Visibility();
         adjustLayer20Width();
         updateCheckButtonState();
+        updateCalculationDisplay();
     }
 
     operators.forEach(op => {
@@ -324,6 +394,7 @@ document.addEventListener("DOMContentLoaded", () => {
             } else {
                 layer20.insertBefore(dragging, afterElement);
             }
+            updateCalculationDisplay();
         }
     });
 
@@ -573,7 +644,7 @@ document.addEventListener("DOMContentLoaded", () => {
             clearInterval(timerInterval);
         }
 
-        let remainingTime = 5 * 60; // Atur ulang waktu ke 5 menit
+        let remainingTime = 1 * 60; // Atur ulang waktu ke 5 menit
         
         // Fungsi untuk memperbarui tampilan timer
         const updateDisplay = () => {
