@@ -15,6 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let computerScore = 0;
     let playerScore = 0;
     let draggedFollower = null;
+    let timerInterval = null;
 
     const transparentPixel = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
     const pixelImg = document.createElement('img');
@@ -166,6 +167,8 @@ document.addEventListener("DOMContentLoaded", () => {
             renderMainCards(currentDeck);
             updateCheckButtonState();
             console.log(`Ronde baru - Harus tanpa solusi: ${shouldHaveNoSolution}, Hasil: ${currentDeckHasSolution ? 'Punya solusi' : 'Tidak punya solusi'}, Kartu: ${currentDeckNumbers}`);
+
+            startTimer();
         };
 
         if (delay > 0) {
@@ -565,18 +568,32 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     function startTimer() {
-        let remainingTime = 5 * 60;
-        const interval = setInterval(() => {
+        // Hentikan timer sebelumnya jika ada yang berjalan
+        if (timerInterval) {
+            clearInterval(timerInterval);
+        }
+
+        let remainingTime = 5 * 60; // Atur ulang waktu ke 5 menit
+        
+        // Fungsi untuk memperbarui tampilan timer
+        const updateDisplay = () => {
             const minutes = Math.floor(remainingTime / 60);
             const secs = remainingTime % 60;
             playtime.textContent = `${minutes.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
-            if (--remainingTime < 0) {
-                clearInterval(interval);
-                // Tambahkan logika game over di sini jika perlu
+        };
+
+        updateDisplay(); // Panggil sekali agar timer langsung menunjukkan 05:00
+
+        timerInterval = setInterval(() => {
+            remainingTime--;
+            updateDisplay();
+            
+            if (remainingTime < 0) {
+                clearInterval(timerInterval);
+                // Tambahkan logika game over di sini, misalnya:
+                showPopup("TIME'S UP!", "Waktu habis! Coba lagi di ronde berikutnya.", false, null, () => startNewRound({ force: true }));
             }
         }, 1000);
     }
-
     startNewRound({ force: true });
-    startTimer();
 });
