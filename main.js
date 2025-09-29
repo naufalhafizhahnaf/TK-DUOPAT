@@ -58,9 +58,11 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        // ... (sisa kode untuk membangun string tidak berubah)
         let displayStr = "";
         let evalStr = "";
+        let mainCardsOnly = true; // MODIFIKASI: Flag untuk mengecek hanya kartu utama
+        let sumOfMainCards = 0; // MODIFIKASI: Variabel untuk menjumlahkan kartu utama
+
         const symbolMap = {
             "(H.png": { display: "(", eval: "(" },
             ")H.png": { display: ")", eval: ")" },
@@ -69,14 +71,21 @@ document.addEventListener("DOMContentLoaded", () => {
             "+H.png": { display: "+", eval: "+" },
             "-H.png": { display: "-", eval: "-" }
         };
+
         for (const card of cards) {
             const folder = card.getAttribute("data-folder");
             const file = card.getAttribute("data-file");
+
             if (folder === "main") {
                 const rank = getRankFromFile(file);
                 displayStr += ` ${rank} `;
                 evalStr += ` ${rank} `;
+                // MODIFIKASI: Hitung jumlah kartu utama
+                sumOfMainCards += rank;
             } else if (folder === "operator") {
+                // MODIFIKASI: Set flag ke false jika ada operator
+                mainCardsOnly = false; 
+
                 const op = symbolMap[file];
                 if (op) {
                     displayStr += ` ${op.display} `;
@@ -84,7 +93,21 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             }
         }
+        
         displayExpressionEl.textContent = displayStr.trim().replace(/\s+/g, ' ');
+
+        // MODIFIKASI: LOGIKA BARU UNTUK HANYA MAIN CARD (PENJUMLAHAN)
+        if (mainCardsOnly) {
+            if (cards.length > 0) {
+                // Ubah displayStr agar terlihat seperti penjumlahan
+                displayExpressionEl.textContent = cards.map(c => getRankFromFile(c.getAttribute("data-file"))).join(" + ");
+                displayResultEl.textContent = `= ${sumOfMainCards}`;
+            } else {
+                displayResultEl.textContent = "";
+            }
+            return; // Keluar dari fungsi setelah menampilkan penjumlahan
+        }
+        // END MODIFIKASI LOGIKA BARU
 
         if (isSequenceValid(cards)) {
             try {
@@ -533,7 +556,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
     btnCheck.addEventListener("click", () => {
         const cardsInLayer20 = [...layer20.children];
-        if (cardsInLayer20.length === 0) return;
+        
+        // MODIFIKASI: Periksa apakah 4 kartu utama telah digunakan
+        const mainCardsUsed = cardsInLayer20.filter(c => c.getAttribute("data-folder") === 'main').length;
+        if (mainCardsUsed !== currentDeck.length) { // currentDeck.length selalu 4
+            // MODIFIKASI: Tampilkan popup jika tombol tidak dinonaktifkan (sebagai pengaman)
+            if (!btnCheck.disabled) {
+                showPopup("ATTENTION", `Harus menggunakan semua ${currentDeck.length} kartu utama!`, false, null, null);
+            }
+            return;
+        }
+        // END MODIFIKASI
 
         if (!isSequenceValid(cardsInLayer20)) {
             showPopup("ERROR", "Ekspresi matematika tidak valid!", false, null, null);
@@ -541,6 +574,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         let expression = "";
+        // ... (sisa logika untuk membangun ekspresi dan evaluasi)
         for (let el of cardsInLayer20) {
             const folder = el.getAttribute("data-folder");
             const file = el.getAttribute("data-file");
@@ -576,7 +610,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 showPopup("WRONG!", "Hasil perhitunganmu belum tepat.", true, currentSolution, startNewRoundCallback);
             }
         } else {
-            showPopup("INFO", "Kartu yang muncul tidak akan menghasilkan 24!", false, null, startNewRoundCallback);
+            // MODIFIKASI: Logika tanpa solusi
+            if (Math.abs(result - 24) < 1e-6) {
+                computerScore++;
+                computerScoreEl.textContent = computerScore;
+                showPopup("WRONG!", "Kartu ini tidak memiliki solusi 24. Hasilmu: 24, tapi tidak valid.", false, null, startNewRoundCallback);
+            } else {
+                showPopup("INFO", "Kartu yang muncul tidak akan menghasilkan 24!", false, null, startNewRoundCallback);
+            }
         }
     });
 
@@ -607,10 +648,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function updateCheckButtonState() {
-        btnCheck.disabled = layer20.children.length === 0;
+        const cardsInLayer20 = [...layer20.children];
+        const mainCardsInLayer20 = cardsInLayer20.filter(c => c.getAttribute("data-folder") === 'main').length;
+
+        // Tombol CHECK dinonaktifkan jika:
+        // 1. Tidak ada kartu sama sekali di layer20.
+        // 2. Jumlah kartu utama yang digunakan BUKAN 4 (currentDeck.length).
+        const disableCheck = cardsInLayer20.length === 0 || mainCardsInLayer20 !== currentDeck.length; 
+        btnCheck.disabled = disableCheck;
     }
-
-
 
     function getDragAfterElement(container, x) {
         const draggableElements = [...container.querySelectorAll(".operator-card:not(.dragging)")];
