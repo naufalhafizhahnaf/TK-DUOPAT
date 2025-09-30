@@ -417,8 +417,8 @@ img.table-img {
     font-family: 'Lora', serif;
     font-weight: 400;
     font-size: 14px;
-    padding: 5px 15px;
-    border-radius: 20px;
+    padding: 8px 25px;
+    border-radius: 25px;
     border: none;
     cursor: pointer;
     transition: transform 0.2s, opacity 0.2s;
@@ -432,8 +432,6 @@ img.table-img {
     background-color: transparent;
     color: #fff;
     border: 2px solid #fff;
-    border-radius: 25px;
-    padding: 8px 25px;
 }
 
 .btn-surrender:hover {
@@ -471,10 +469,21 @@ img.table-img {
 .btn-check {
     background-color: #81141B;
     color: #fff;
+    border: none;
 }
 
 .btn-check:hover {
     opacity: 0.8;
+}
+
+.btn-check[disabled] {
+    background-color: transparent; /* Hilangkan fill */
+    color: #81141B; /* Warna teks (stroke) */
+    border: 2px solid #81141B; /* Tambahkan stroke dengan warna yang sama */
+    cursor: not-allowed;
+    /* Hilangkan efek hover saat disabled */
+    opacity: 1; 
+    transform: none; 
 }
 
 /* Tombol Delete */

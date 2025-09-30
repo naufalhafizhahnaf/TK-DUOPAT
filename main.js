@@ -690,7 +690,7 @@ document.addEventListener("DOMContentLoaded", () => {
             clearInterval(timerInterval);
         }
 
-        let remainingTime = 1 * 60; // Atur ulang waktu ke 5 menit
+        let remainingTime = 5 * 60; // Atur ulang waktu ke 5 menit
         
         // Fungsi untuk memperbarui tampilan timer
         const updateDisplay = () => {
