@@ -175,11 +175,36 @@ main {
     overflow: hidden; /* cegah scroll */
 }
 
+.table-container {
+    position: relative; /* Penting untuk penempatan watermark */
+    width: 100%;
+    max-width: 50%; /* Sesuaikan dengan ukuran table-img */
+    height: auto;
+    display: flex; /* Untuk memposisikan gambar di tengah */
+    justify-content: center;
+    align-items: center;
+}
+
 /* Table image */
 .table-img {
-    width: 100%;     
-    max-width: 50%; 
+    width: 100%; /* Isi lebar kontainer .table-container */
+    max-width: none; /* Aturan ini dipindahkan ke .table-container */
     height: auto;
+}
+
+/* Watermark */
+.table-watermark {
+    position: absolute; /* Posisikan di dalam .table-container */
+    top: 70%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Posisikan tepat di tengah */
+
+    /* Pengaturan tampilan watermark */
+    width: 150px; /* **Sesuaikan** ukuran watermark ini sesuai keinginan */
+    height: auto;
+    opacity: 0.5; /* Atur transparansi (misal 10%) */
+    pointer-events: none; /* Non-aktifkan interaksi mouse pada watermark */
+    z-index: 1; /* Pastikan di atas meja */
 }
 
 img.table-img {
