@@ -599,25 +599,23 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         const startNewRoundCallback = () => startNewRound({ force: true });
-        if (currentDeckHasSolution) {
-            if (Math.abs(result - 24) < 1e-6) {
-                playerScore++;
-                playerScoreEl.textContent = playerScore;
-                showPopup("CONGRATULATIONS!", "Jawaban Anda benar!", false, null, startNewRoundCallback);
-            } else {
-                computerScore++;
-                computerScoreEl.textContent = computerScore;
-                showPopup("WRONG!", "Hasil perhitunganmu belum tepat.", true, currentSolution, startNewRoundCallback);
-            }
+        // Periksa apakah hasilnya 24, terlepas dari solusi yang ditemukan
+        if (Math.abs(result - 24) < 1e-6) {
+            // JIKA HASILNYA 24 (MENANG)
+            playerScore++;
+            playerScoreEl.textContent = playerScore;
+            showPopup("CONGRATULATIONS!", "Jawaban Anda benar!", false, null, startNewRoundCallback);
         } else {
-            // MODIFIKASI: Logika tanpa solusi
-            if (Math.abs(result - 24) < 1e-6) {
-                computerScore++;
-                computerScoreEl.textContent = computerScore;
-                showPopup("WRONG!", "Kartu ini tidak memiliki solusi 24. Hasilmu: 24, tapi tidak valid.", false, null, startNewRoundCallback);
-            } else {
-                showPopup("INFO", "Kartu yang muncul tidak akan menghasilkan 24!", false, null, startNewRoundCallback);
-            }
+            // JIKA HASILNYA BUKAN 24 (KALAH)
+            computerScore++;
+            computerScoreEl.textContent = computerScore;
+            
+            // Tampilkan solusi jika kartu memang punya solusi untuk 24 (logika bawaan game 24)
+            const showSolution = currentDeckHasSolution ? currentSolution : null;
+            const popupTitle = currentDeckHasSolution ? "WRONG!" : "INFO";
+            const popupMessage = currentDeckHasSolution ? "Hasil perhitunganmu belum tepat." : "Kartu yang muncul tidak akan menghasilkan 24!";
+
+            showPopup(popupTitle, popupMessage, !!showSolution, showSolution, startNewRoundCallback);
         }
     });
 
@@ -629,7 +627,7 @@ document.addEventListener("DOMContentLoaded", () => {
             computerScoreEl.textContent = computerScore;
             showPopup("SURRENDER", "Jangan patah semangat, coba lagi!", true, currentSolution, startNewRoundCallback);
         } else {
-            showPopup("SURRENDER", "Kartu ini memang tidak memiliki solusi. Kerja bagus!", false, null, startNewRoundCallback);
+            showPopup("SURRENDER", "Kartu ini memang tidak memiliki solusi. Anda beruntung!", false, null, startNewRoundCallback);
         }
     });
 
@@ -705,9 +703,13 @@ document.addEventListener("DOMContentLoaded", () => {
             remainingTime--;
             updateDisplay();
             
-            if (remainingTime < 0) {
+            if (remainingTime <= 0) {
                 clearInterval(timerInterval);
                 
+                // Pastikan tampilan akhir adalah 00:00 sebelum menampilkan popup
+                remainingTime = 0; 
+                updateDisplay(); 
+
                 // Format skor menjadi 4 digit agar sesuai gambar (misal: 7 -> "0007")
                 const paddedScore = playerScore.toString().padStart(4, '0');
 
@@ -720,8 +722,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 `;
 
                 // Panggil popup dengan tampilan skor yang baru
-                showPopup("WAKTU HABIS!", message, false, null, resetGame);
+                showPopup("New Highscore!", message, false, null, resetGame);
+                return;
             }
+
+            // Kurangi waktu hanya jika masih ada
+            remainingTime--;
+            updateDisplay();
         }, 1000);
     }
 

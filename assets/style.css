@@ -3,7 +3,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'lora', sans-serif;
 }
 
 html, body {
@@ -86,7 +86,7 @@ header .rectangle-score-computer {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-family: 'Lora', serif;
+    font-family: 'Lora', sans-serif;
     font-size: 20px;
     font-weight: 700;
 }
@@ -101,7 +101,7 @@ header .rectangle-name-computer {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-family: 'Lora', serif;
+    font-family: 'Lora', sans-serif;
     font-size: 15px;
     font-weight: 700;
 }
@@ -176,9 +176,7 @@ main {
 }
 
 .table-container {
-    position: relative; /* Penting untuk penempatan watermark */
-    width: 100%;
-    max-width: 50%; /* Sesuaikan dengan ukuran table-img */
+    position: fixed; /* Penting untuk penempatan watermark */
     height: auto;
     display: flex; /* Untuk memposisikan gambar di tengah */
     justify-content: center;
@@ -187,8 +185,7 @@ main {
 
 /* Table image */
 .table-img {
-    width: 100%; /* Isi lebar kontainer .table-container */
-    max-width: none; /* Aturan ini dipindahkan ke .table-container */
+    width: 60%; /* Isi lebar kontainer .table-container */ /* Aturan ini dipindahkan ke .table-container */
     height: auto;
 }
 
@@ -230,7 +227,7 @@ img.table-img {
     flex-direction: column;
     justify-content: space-between;
     z-index: 5;
-    font-family: 'Lora', serif; /* Font monospaced agar angka sejajar */
+    font-family: 'Lora', sans-serif; /* Font monospaced agar angka sejajar */
 }
 
 .display-banner-container {
@@ -250,7 +247,7 @@ img.table-img {
 }
 
 .display-banner-container .banner-text {
-    font-family: 'Lora', serif; /* Font yang diminta */
+    font-family: 'Bebas Neue', sans-serif; /* Font yang diminta */
     font-size: 10px; /* Ukuran font yang lebih kecil */
     font-weight: 700;
     color: #000;
@@ -282,7 +279,7 @@ img.table-img {
 /* Overlay container (judul + kotak) */
 .overlay-container {
     position: absolute;
-    top: 80%;
+    top: 83%;
     left: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
@@ -293,9 +290,9 @@ img.table-img {
 .overlay-title {
     background-color: #81141B;
     color: #fff;
-    font-family: 'Bree Serif';
+    font-family: 'lora', sans-serif;
     font-size: 15px;
-    padding: 8px 20px;
+    padding: 8px 40px;
     border-radius: 8px;
     display: inline-block;
 }
@@ -415,7 +412,7 @@ img.table-img {
     padding: 4px 0;
     font-size: 14px;
     color: #fff;
-    font-family: 'Lora', serif;
+    font-family: 'Lora', sans-serif;
 }
 
 /* Icon */
@@ -439,7 +436,7 @@ img.table-img {
 
 /* Base style untuk semua tombol */
 .action-buttons button {
-    font-family: 'Lora', serif;
+    font-family: 'Lora', sans-serif;
     font-weight: 400;
     font-size: 14px;
     padding: 8px 25px;
@@ -472,7 +469,7 @@ img.table-img {
     cursor: pointer;
     background-color: #fff;
     color: #81141B;
-    font-family: 'Lora', serif;
+    font-family: 'Lora', sans-serif;
     font-size: 14px;
     transition: opacity 0.2s;
 }
@@ -480,14 +477,6 @@ img.table-img {
 .result-popup .btn-solution:hover,
 .result-popup .btn-ok:hover {
     opacity: 0.8;
-}
-
-/* Container teks pesan di popup */
-.result-popup .message-text {
-    margin-bottom: 15px;
-    font-size: 14px;
-    font-family: 'Lora', serif;
-    line-height: 1.4;
 }
 
 /* Tombol Check */
@@ -707,7 +696,7 @@ img.table-img {
 
 /* Style untuk judul "Score" di dalam popup */
 .popup-score-title {
-    font-family: 'Lora', serif;
+    font-family: 'Lora', sans-serif;
     font-size: 20px;
     font-weight: bold;
     color: #000;
@@ -724,7 +713,7 @@ img.table-img {
 
 /* Style untuk teks angka skor */
 .popup-score-text {
-    font-family: 'Lora', serif; /* Font serif yang elegan seperti gambar */
+    font-family: 'Lora', sans-serif; /* Font serif yang elegan seperti gambar */
     font-size: 48px;            /* Ukuran angka yang besar */
     color: #A1262E;             /* Warna merah marun */
     font-weight: 700;           /* Teks tebal */
@@ -741,7 +730,7 @@ img.table-img {
 
 /* Container teks pesan di popup */
 .result-popup .message-text {
-    font-family: 'Lora', serif;
+    font-family: 'Lora', sans-serif;
     font-size: 16px;
     line-height: 1.5;
     margin-bottom: 15px;
@@ -758,7 +747,7 @@ img.table-img {
     cursor: pointer;
     background-color: #fff;
     color: #81141B;
-    font-family: 'Lora', serif;
+    font-family: 'Lora', sans-serif;
     font-size: 14px;
     transition: opacity 0.2s;
     position: relative;
