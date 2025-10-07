@@ -236,7 +236,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const doStart = () => {
             clearLayer20AndRestoreMain();
-            const shouldHaveNoSolution = Math.random() < 0.5;
+            const shouldHaveNoSolution = Math.random() < 0.5; // 50% solusi (Semakin kecil, semakin mudah dapat solusi)
             let attempts = 0;
             const maxAttempts = 50;
 
@@ -292,6 +292,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 e.dataTransfer.setData("text/file", file);
                 e.dataTransfer.setData("text/type", "container");
                 e.dataTransfer.setData("text/folder", "main");
+                e.dataTransfer.setData("text/plain", `${file}|main`); 
                 e.dataTransfer.setDragImage(pixelImg, 0, 0);
 
                 if (draggedFollower) {
@@ -356,13 +357,57 @@ document.addEventListener("DOMContentLoaded", () => {
         newCard.draggable = true;
         newCard.addEventListener("dragstart", e => {
             e.dataTransfer.effectAllowed = "move";
-            e.dataTransfer.setData("text/plain", `${fileName}|${folder}`);
-            newCard.classList.add("dragging");
+            // Data yang dibawa: format "fileName|folder"
+            e.dataTransfer.setData("text/plain", `${fileName}|${folder}`); 
+            e.dataTransfer.setDragImage(pixelImg, 0, 0); // Gunakan pixel transparan
+
+            // Buat Drag Follower
+            if (draggedFollower) {
+                draggedFollower.remove();
+            }
+            draggedFollower = newCard.cloneNode(true);
+            draggedFollower.classList.add("card-follower");
+            draggedFollower.style.width = folder === 'main' ? '55px' : '45px'; // Sesuaikan ukuran
+            draggedFollower.style.height = 'auto';
+
+            const followerImg = draggedFollower.querySelector('img');
+            if (followerImg) {
+                followerImg.style.width = '100%';
+                followerImg.style.height = 'auto';
+            }
+
+            draggedFollower.style.left = `${e.clientX - 27}px`;
+            draggedFollower.style.top = `${e.clientY - 38}px`;
+            document.body.appendChild(draggedFollower);
+            
+            // Tandai kartu yang sedang di-drag sebagai "dragging" dan hapus dari layer20
+            // agar bisa 'dipindahkan' saat drop ke container lain
+            newCard.classList.add("dragging-from-layer20");
+            setTimeout(() => {
+                newCard.style.display = 'none';
+            }, 0);
         });
+
         newCard.addEventListener("dragend", () => {
-            newCard.classList.remove("dragging");
+            // Hapus follower
+            if (draggedFollower) {
+                draggedFollower.remove();
+                draggedFollower = null;
+            }
+            // Hapus class dragging-from-layer20. Jika belum di-drop ke container, 
+            // kartu harus dikembalikan (dihapus/dikembalikan tampilannya)
+            newCard.classList.remove("dragging-from-layer20");
+            
+            // Logika ini akan ditangani di event listener drop pada container, 
+            // sehingga jika dragend terjadi tanpa drop yang valid, 
+            // kartu akan kembali ke layer20 (tampilannya di-restore)
+            if (newCard.parentNode === layer20) {
+                newCard.style.display = 'block';
+            }
+            
             updateCalculationDisplay();
         });
+        // END MODIFIKASI
 
         layer20.appendChild(newCard);
         updateLayer50Visibility();
@@ -681,6 +726,52 @@ document.addEventListener("DOMContentLoaded", () => {
             draggedFollower = null;
         }
     });
+
+    function restoreMainCard(file) {
+        const originalCard = mainCardsMap[file];
+        if (originalCard) {
+            originalCard.style.display = "block";
+        }
+    }
+
+    function handleDropToContainer(e, targetContainer, expectedFolder) {
+        e.preventDefault();
+        const data = e.dataTransfer.getData("text/plain");
+
+        // Cek apakah data berasal dari kartu di layer20 (format: "fileName|folder")
+        if (data) {
+            const [fileName, folder] = data.split('|');
+            
+            // Cari kartu asli di layer20
+            const draggedCardInLayer20 = layer20.querySelector(`.dragging-from-layer20[data-file="${fileName}"][data-folder="${folder}"]`);
+
+            if (draggedCardInLayer20 && folder === expectedFolder) {
+                // Hapus kartu dari layer20
+                draggedCardInLayer20.remove(); 
+                
+                if (folder === "main") {
+                    // Untuk kartu utama, kembalikan tampilan kartu di main-cards-container
+                    restoreMainCard(fileName);
+                }
+                // Untuk kartu operator, tidak perlu dikembalikan (karena operator memang disalin)
+
+                // Perbarui UI
+                updateLayer50Visibility();
+                adjustLayer20Width();
+                updateCheckButtonState();
+                updateCalculationDisplay();
+            }
+        }
+    }
+
+    // 1. Drop ke Main Cards Container (untuk kartu angka)
+    mainCardsContainer.addEventListener("dragover", e => { e.preventDefault(); });
+    mainCardsContainer.addEventListener("drop", e => handleDropToContainer(e, mainCardsContainer, "main"));
+
+    // 2. Drop ke Operator Container (untuk kartu operator)
+    operatorContainer.addEventListener("dragover", e => { e.preventDefault(); });
+    operatorContainer.addEventListener("drop", e => handleDropToContainer(e, operatorContainer, "operator"));
+
 
     function startTimer() {
         // Hentikan timer sebelumnya jika ada yang berjalan
