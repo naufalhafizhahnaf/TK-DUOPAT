@@ -236,7 +236,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const doStart = () => {
             clearLayer20AndRestoreMain();
-            const shouldHaveNoSolution = Math.random() < 0.5; // 50% solusi (Semakin kecil, semakin mudah dapat solusi)
+            const shouldHaveNoSolution = Math.random() < 0.1; // 10% chance
             let attempts = 0;
             const maxAttempts = 50;
 
@@ -781,7 +781,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         let remainingTime = 5 * 60; // Atur ulang waktu ke 5 menit
         
-        // Fungsi untuk memperbarui tampilan timer
         const updateDisplay = () => {
             const minutes = Math.floor(remainingTime / 60);
             const secs = remainingTime % 60;
@@ -791,35 +790,25 @@ document.addEventListener("DOMContentLoaded", () => {
         updateDisplay(); // Panggil sekali agar timer langsung menunjukkan 05:00
 
         timerInterval = setInterval(() => {
-            remainingTime--;
-            updateDisplay();
-            
+            // Cek dulu sebelum mengurangi, agar popup muncul saat waktu tepat 00:00
             if (remainingTime <= 0) {
                 clearInterval(timerInterval);
                 
-                // Pastikan tampilan akhir adalah 00:00 sebelum menampilkan popup
-                remainingTime = 0; 
-                updateDisplay(); 
-
-                // Format skor menjadi 4 digit agar sesuai gambar (misal: 7 -> "0007")
                 const paddedScore = playerScore.toString().padStart(4, '0');
-
-                // Buat pesan HTML dengan judul "Score" di atas dan kotak skor di bawah
                 const message = `
                     <div class="popup-score-title">Score</div>
                     <div class="popup-score-box">
                         <span class="popup-score-text">${paddedScore}</span>
                     </div>
                 `;
-
-                // Panggil popup dengan tampilan skor yang baru
                 showPopup("New Highscore!", message, false, null, resetGame);
-                return;
+                return; // Hentikan eksekusi lebih lanjut
             }
-
-            // Kurangi waktu hanya jika masih ada
+            
+            // Kurangi waktu HANYA SEKALI di sini
             remainingTime--;
             updateDisplay();
+
         }, 1000);
     }
 

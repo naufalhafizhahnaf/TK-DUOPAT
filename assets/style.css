@@ -216,7 +216,8 @@ img.table-img {
     top: 50%;
     left: 5%; /* Sesuaikan posisi horizontal */
     transform: translateY(-50%);
-    width: 250px; /* Lebar display */
+    width: 30%; /* Lebar display */
+    max-width: 250px ;
     height: 100px; /* Tinggi display */
     background-color: #ffffff33; /* Warna latar gelap seperti kalkulator */
     border: #81141B 5px solid; /* Border merah marun */
@@ -770,4 +771,21 @@ footer {
     text-align: center;
     padding: 20px;
     background-color: transparent;
+}
+
+@media (max-width: 768px) {
+    .cards-wrapper {
+        bottom: 70%;
+        width: 20%;
+    }
+    .scoreboard {
+        width: 70%;
+    }
+    .table-container {
+        width: 100%;
+    }
+    .table-img {
+        transform: rotate(90deg);
+        width: 100%;
+    }
 }
